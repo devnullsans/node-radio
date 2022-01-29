@@ -2,18 +2,19 @@ import { constants } from 'fs';
 import { access, readFile } from 'fs/promises';
 import { join, extname } from 'path';
 import { createServer } from 'http';
-import { startWatching } from './watcher.js';
+import Clients from "./clients.js";
+import Throttler from "./throttler.js";
 import mimes from './mimes.js';
-// const Engine = require('./engine');
+
+const clients = new Clients();
+const throttler = new Throttler(clients, 30 * 1024);
 
 const server = createServer(async (req, res) => {
-	// if (req.method === 'GET' && req.url === '/stream') {
-	// 	const { id, responseSink } = Engine.queue.makeResponseSink();
-	// 	req.once('close', () => Engine.queue.removeResponseSink(id));
-	// 	res.writeHead(200, {'Content-Type': 'audio/mpeg'});
-	// 	responseSink.pipe(res);
-	// 	return;
-	// }
+	if (req.method === 'GET' && req.url === '/stream') {
+		const cid = clients.addClient(res);
+		req.once('close', () => clients.deleteClient(cid));
+		res.writeHead(200, {'Content-Type': 'audio/mpeg'});
+	}
 	if (req.method === 'GET' && req.url !== '/stream') {
 		const filePath = join(process.cwd(), 'public', req.url);
 		console.log(filePath);
@@ -26,10 +27,9 @@ const server = createServer(async (req, res) => {
 			return res.writeHead(404).end();
 		}
 	}
-})
+});
 
 server.listen(process.env.PORT ?? 8080, () => {
-	// Engine.start();
-	startWatching(join(process.cwd(), 'tracks'));
+	throttler.startPlaying();
 	console.log('server is up:', server.address());
 });
