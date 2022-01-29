@@ -1,0 +1,11 @@
+{
+  "name": "radio",
+  "version": "0.6.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
