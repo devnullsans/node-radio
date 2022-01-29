@@ -1,15 +1,22 @@
 import { randomUUID } from 'crypto';
 
-const clientsMap = new Map();
 
-export const addClient = res => {
-	const id = randomUUID();
-	clientsMap.set(id, res);
-	return id;
-};
+export default class Clients {
+	constructor() {
+		this._clients = new Map();
+	}
 
-export const deleteClient = id => clientsMap.delete(id);
+	addClient(res) {
+		const id = randomUUID();
+		this._clients.set(id, res);
+		return id;
+	}
 
-export const broadcastToEveryClient = chunk => {
-	for (const client of clientsMap.values()) client.write(chunk);
-};
+	deleteClient(id) {
+		return this._clients.delete(id);
+	}
+
+	broadcastToEveryClient(chunk) {
+		for (const client of this._clients.values()) client.write(chunk);
+	}
+}
