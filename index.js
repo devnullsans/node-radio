@@ -7,7 +7,7 @@ import Throttler from "./throttler.js";
 import mimes from './mimes.js';
 
 const clients = new Clients();
-const throttler = new Throttler(clients, 30 * 1024);
+const throttler = new Throttler(clients, 40 * 1024);
 
 const server = createServer(async (req, res) => {
 	if (req.method === 'GET' && req.url === '/stream') {

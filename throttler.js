@@ -15,7 +15,6 @@ export default class Throttler {
 			input: process.stdin,
 			output: null
 		});
-		// this.init();
 	}
 
 	async init() {
@@ -24,60 +23,78 @@ export default class Throttler {
 
 	}
 
-	printMenu() {
+	// printMenu() {
+	// 	console.log('Usage:-');
+	// }
+
+	printQ() {
 		console.log('Queue:-');
-		console.table(this._queue);
+		console.table(this._queue.map(q => {
+			const { name, ext } = parse(q);
+			return name + ext;
+		}));
+	}
+
+	printF() {
 		console.log('Files:-');
-		console.table(this._watcher.getTracks());
+		console.table(this._watcher.getTracks().map(f => {
+			const { name, ext } = parse(f);
+			return name + ext;
+		}));
+	}
+
+	readCommand(line) {
+
+		if (line.trim() === 'x') {
+			this._queue = [];
+			this.printQ();
+		}
+
+		if (line.trim() === 'q') this.printQ();
+
+		if (line.trim() === 'f') this.printF();
+
+		if (!isNaN(Number(line.trim()))) {
+			const track = this._watcher.getTracks()[Number(line.trim())];
+			if (track) {
+				this._queue.push(track);
+				this.printQ();
+				if (!this._curS) this.startPlaying();
+			}
+		}
 	}
 
 	async startPlaying() {
 		if (!this._init) await this.init() || this._queue.push(...this._watcher.getTracks());
 		if (this._queue.length === 0) this._curS = '';
-		else this.streamTrack(this._queue.shift());
+		else {
+			this._curS = this._queue.shift();
+			this.streamTrack();
+		}
 		if (!this._init) {
 			this._rl.on('line', line => this.readCommand(line));
-			this.printMenu();
 			this._init = true;
 		}
 
 	}
 
-	streamTrack(file) {
-		console.log('now-playing:', file);
-		this._curS = file;
-let totalBytes = 0;
-const startTime = Date.now();
-		const rs = createReadStream(file, { highWaterMark: this._bps });
+	streamTrack() {
+		console.log('play:', this._curS.substring(this._curS.lastIndexOf('/')+1));
+		// let totalBytes = 0;
+		// const startTime = Date.now();
+		const rs = createReadStream(this._curS, { highWaterMark: this._bps });
 		const id = setInterval(() => rs.resume(), 1e3);
 		rs.on('data', chunk => {
 			rs.pause();
-totalBytes += chunk.byteLength;
-console.log(chunk.byteLength, totalBytes, Date.now() - startTime);
+			// totalBytes += chunk.byteLength;
+			// console.log(chunk.byteLength, totalBytes, Date.now() - startTime);
 			this._clients.broadcastToEveryClient(chunk);
 		});
 		rs.once('end', () => {
+			console.log('end-playing:', this._curS.substring(this._curS.lastIndexOf('/')+1));
 			clearInterval(id);
 			this.startPlaying();
 		});
 	}
 
-	readCommand(line) {
-
-		if (line.trim() === 'x') this._queue = [];
-
-		if (!isNaN(Number(line.trim()))) {
-			const i = Number(line.trim());
-			const track = this._watcher.getTracks()[Number(line.trim())];
-			if (track) {
-				this._queue.push(track);
-				if (!this._curS) this.startPlaying();
-			}
-		}
-
-		this.printMenu();
-
-	}
 }
-
-// test();
