@@ -13,7 +13,6 @@ export default class Watcher {
 			this._mp3 = (await readdir(this._dir, { withFileTypes: true }))
 				.filter(track => track.isFile() && extname(track.name) === '.mp3')
 				.map(track => join(this._dir, track.name));
-			console.log(this._mp3);
 		} catch (err) {
 			throw err;
 		}
@@ -21,7 +20,6 @@ export default class Watcher {
 
 	async startWatching() {
 		try {
-			// await this.reloadList();
 			const watcher = await watch(this._dir);
 			for await (const { eventType } of watcher) {
 				if (eventType === 'rename') {
