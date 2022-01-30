@@ -17,7 +17,7 @@ const server = createServer(async (req, res) => {
 	}
 	if (req.method === 'GET' && req.url !== '/stream') {
 		const filePath = join(process.cwd(), 'public', req.url);
-		console.log(filePath);
+		// console.log(filePath);
 		try {
 			await access(filePath, constants.R_OK);
 			res.writeHead(200, ['Content-Type', mimes[extname(filePath)] ?? 'text/plain']);
