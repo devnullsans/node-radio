@@ -1,0 +1,7 @@
+ffprobe:-
+mint@mint-ThinkPad-E490:~/Documents/node-radio/ffmpeg$>
+./ffprobe ~/Documents/node-radio/tracks/04\ -\ \(Chali\).mp3 
+
+ffmpeg:-
+mint@mint-ThinkPad-E490:~/Documents/node-radio/ffmpeg$>
+./ffmpeg -i [input/file/path/file.mp3] -vn -c:a copy -map_metadata -1 [output/file/path/file.mp3]
