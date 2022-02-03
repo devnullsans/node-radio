@@ -6,14 +6,18 @@
 	<title>Node.js Radio</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" media="screen" href="/index.css" />
-	<!-- <script src="/index.js"></script> -->
+	<script defer src="/index.js"></script>
 </head>
 <body>
     <div id='main'>
         <h1 id="title">Very Cool Radio</h1>
         <img id="logo" src="/nodejs-logo.png">
+        <h1>Real Time Messaging</h1>
+        <pre id="messages"></pre>
+        <input type="text" id="messageBox" />
+        <button id="sendMessage" title="Send Message!">Send Message</button>
         <div id='radio'>
-            <audio id="audio" src="/stream" preload="none" controls autoplay></audio>
+            <audio id="audio" src="/stream" preload="none" autoplay="" controls=""></audio>
         </div>
     </div>
 </body>
