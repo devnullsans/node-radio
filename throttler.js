@@ -79,9 +79,9 @@ export default class Throttler {
 	}
 
 	streamTrack() {
-		console.log('play:', this._curS.substring(this._curS.lastIndexOf('/')+1));
 		// let totalBytes = 0;
 		// const startTime = Date.now();
+		console.log(Date(), 'play:', this._curS.substring(this._curS.lastIndexOf('/') + 1));
 		const rs = createReadStream(this._curS, { highWaterMark: this._bps });
 		const id = setInterval(() => rs.resume(), 1e3);
 		rs.on('data', chunk => {
@@ -91,7 +91,7 @@ export default class Throttler {
 			this._clients.broadcastToEveryClient(chunk);
 		});
 		rs.once('end', () => {
-			console.log('end-playing:', this._curS.substring(this._curS.lastIndexOf('/')+1));
+			console.log(Date(), 'end-playing:', this._curS.substring(this._curS.lastIndexOf('/') + 1));
 			clearInterval(id);
 			this.startPlaying();
 		});
