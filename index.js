@@ -26,7 +26,7 @@ const server = createServer(async (req, res) => {
 					res.writeHead(200, ['Content-Type', mimes[extname(filePath)] ?? 'text/plain']);
 					res.end(await readFile(filePath));
 				} catch (err) {
-					console.error(err);
+					console.error(err.message);
 					res.writeHead(404).end();
 				}
 			} return;

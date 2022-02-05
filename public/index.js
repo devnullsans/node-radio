@@ -8,13 +8,13 @@ let ws;
 function showChat(data) {
 	const p = document.createElement('p');
 	p.textContent = decodeURI(data);
-	messages.append(p);
+	messages.prepend(p);
 }
 
 function showAdd(data) {
 	const div = document.createElement('div');
 	div.innerHTML = data;
-	messages.append(div);
+	messages.prepend(div);
 }
 
 function trimTen() {
@@ -23,7 +23,7 @@ function trimTen() {
 }
 
 function scrollToTop() {
-	messages.scrollTop = messages.scrollHeight + 20;
+	messages.scrollTop = 0;
 }
 
 function clearInput() {
@@ -31,24 +31,16 @@ function clearInput() {
 }
 
 function init() {
-	if (ws) {
-		ws.onerror = ws.onopen = ws.onclose = null;
-		ws.close();
-	}
-
+	if (ws) ws.onerror = ws.onopen = ws.onclose = ws.close(); // as good as null
 	ws = new WebSocket('ws://localhost:8080/chat');
-	ws.onopen = () => {
-		console.log('Connection opened!');
-	}
+	ws.onopen = () => console.log('Connection opened!');
+	ws.onclose = () => setTimeout(() => init(), 3e3);
 	ws.onmessage = async (event) => {
 		// trimTen();
-		if (event.data instanceof Blob) {
-			const data = await event.data.text();
-			showAdd(data);
-		} else showChat(event.data);
+		if (event.data instanceof Blob) showAdd(await event.data.text());
+		else showChat(event.data);
 		scrollToTop();
 	};
-	ws.onclose = () => setTimeout(() => init(), 3e3);
 
 }
 

@@ -6,6 +6,7 @@ export default class Watcher {
 		this._dir = dir;
 		this._mp3 = [];
 		this._tid = 0;
+		this.startWatching();
 	}
 
 	async reloadList() {
@@ -24,7 +25,7 @@ export default class Watcher {
 			for await (const { eventType } of watcher) {
 				if (eventType === 'rename') {
 					clearTimeout(this._tid);
-					this._tid = setTimeout(() => this.reloadList(), 2e3);
+					this._tid = setTimeout(() => this.reloadList(), 3e3);
 				}
 			}
 		} catch (err) {
@@ -34,5 +35,9 @@ export default class Watcher {
 
 	getTracks() {
 		return this._mp3;
+	}
+
+	getTrack(index) {
+		return this._mp3[(this._mp3.length > index ?  index : index % this._mp3.length)];
 	}
 };

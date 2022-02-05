@@ -5,27 +5,34 @@ import Watcher from "./watcher.js";
 
 export default class Throttler {
 	constructor(clients, bps = 1024) {
-		this._watcher = new Watcher(join(process.cwd(), 'tracks'));
-		this._queue = [];
 		this._clients = clients;
 		this._bps = bps;
-		this.curS = '';
-		this._init = false;
+		this._watcher = new Watcher(join(process.cwd(), 'tracks'));
 		this._rl = createInterface({
 			input: process.stdin,
 			output: null
 		});
+		this._queue = [];
+		this.curS = '';
+		this._init = false;
+
 	}
 
 	async init() {
 		await this._watcher.reloadList();
-		this._watcher.startWatching();
-
+		this._queue.push(...this._watcher.getTracks());
+		this._rl.on('line', line => this.readCommand(line));
+		this._init = true;
 	}
 
-	// printMenu() {
-	// 	console.log('Usage:-');
-	// }
+	async startPlaying() {
+		if (!this._init) await this.init();
+		if (this._queue.length === 0) this._curS = '';
+		else {
+			this._curS = this._queue.shift();
+			this.streamTrack();
+		}
+	}
 
 	printQ() {
 		console.log('Queue:-');
@@ -44,46 +51,43 @@ export default class Throttler {
 	}
 
 	readCommand(line) {
-
-		if (line.trim() === 'x') {
-			this._queue = [];
-			this.printQ();
-		}
-
-		if (line.trim() === 'q') this.printQ();
-
-		if (line.trim() === 'f') this.printF();
-
-		if (!isNaN(Number(line.trim()))) {
-			const track = this._watcher.getTracks()[Number(line.trim())];
-			if (track) {
-				this._queue.push(track);
+		switch (line.trim()) {
+			case 'x':
+				this._queue = [];
+				this.printQ();
+				break;
+			case 'l':
+				this._queue.push(...this._watcher.getTracks());
 				this.printQ();
 				if (!this._curS) this.startPlaying();
-			}
-		}
-	}
+				break;
+			case 'q':
+				this.printQ();
+				break;
+			case 'f':
+				this.printF();
+				break;
 
-	async startPlaying() {
-		if (!this._init) await this.init() || this._queue.push(...this._watcher.getTracks());
-		if (this._queue.length === 0) this._curS = '';
-		else {
-			this._curS = this._queue.shift();
-			this.streamTrack();
+			default:
+				const ix = Number(line.trim());
+				if (!isNaN(ix)) {
+					const track = this._watcher.getTrack(ix);
+					if (track) {
+						this._queue.push(track);
+						this.printQ();
+						if (!this._curS) this.startPlaying();
+					}
+				}
+				break;
 		}
-		if (!this._init) {
-			this._rl.on('line', line => this.readCommand(line));
-			this._init = true;
-		}
-
 	}
 
 	streamTrack() {
 		// let totalBytes = 0;
 		// const startTime = Date.now();
 		console.log(Date(), 'play:', this._curS.substring(this._curS.lastIndexOf('/') + 1));
-		const rs = createReadStream(this._curS, { highWaterMark: this._bps });
-		const id = setInterval(() => rs.resume(), 1e3);
+		const rs = createReadStream(this._curS, { highWaterMark: this._bps * 8 });
+		const id = setInterval(() => rs.resume(), 8e3);
 		rs.on('data', chunk => {
 			rs.pause();
 			// totalBytes += chunk.byteLength;
