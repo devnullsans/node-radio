@@ -86,8 +86,8 @@ export default class Throttler {
 		// let totalBytes = 0;
 		// const startTime = Date.now();
 		console.log(Date(), 'play:', this._curS.substring(this._curS.lastIndexOf('/') + 1));
-		const rs = createReadStream(this._curS, { highWaterMark: this._bps * 8 });
-		const id = setInterval(() => rs.resume(), 8e3);
+		const rs = createReadStream(this._curS, { highWaterMark: this._bps * 2 });
+		const id = setInterval(() => rs.resume(), 2e3);
 		rs.on('data', chunk => {
 			rs.pause();
 			// totalBytes += chunk.byteLength;
