@@ -12,7 +12,11 @@
 
 <body>
 	<header>
-		<audio id="audio" src="/stream" preload="none" autoplay="" controls=""></audio>
+		<audio id="audio" src="/stream" preload="none"></audio>
+		<img id="iconImage" src="" alt="" />
+		<input type="range" id="volumeRange" min="0" max="1" value="1" step="0.01" />
+		<button id="muteButton">Mute</button>
+		<button id="liveButton">Live</button>
 	</header>
 	<nav>
 		<input type="text" id="messageBox" />
