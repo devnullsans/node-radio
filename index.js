@@ -8,7 +8,7 @@ import Throttler from "./throttler.js";
 import mimes from './mimes.js';
 
 const clients = new Clients();
-const throttler = new Throttler(clients, 32 * 1024);
+const throttler = new Throttler(clients, 18 * 1024);
 
 const server = createServer(async (req, res) => {
 	if (req.method === 'GET') {
@@ -16,11 +16,11 @@ const server = createServer(async (req, res) => {
 			case '/stream': {
 				const cid = clients.addClient(res);
 				req.once('close', () => clients.deleteClient(cid));
-				res.writeHead(206, {
+				res.writeHead(200, {
 					'Transfer-Encoding': 'chunked',
 					'Content-Type': 'audio/mpeg',
-					'Accept-Ranges': 'bytes',
-					'Content-Range': 'bytes 0-'
+					'Cache-Control': 'no-cache',
+					// 'Content-Range': 'bytes 0-'
 				});
 			} return;
 
