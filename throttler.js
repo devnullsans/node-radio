@@ -27,8 +27,9 @@ export default class Throttler {
 
 	async startPlaying() {
 		if (!this._init) await this.init();
-		if (this._queue.length === 0) this._curS = '';
-		else {
+		if (this._queue.length === 0) {
+			this._curS = '';
+		} else {
 			this._curS = this._queue.shift();
 			this.streamTrack();
 		}
