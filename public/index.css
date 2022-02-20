@@ -1,7 +1,7 @@
 body {
-    height: 96vh;
+    height: calc(100vh - 10px);
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column-reverse nowrap;
     align-items: stretch;
     background-color: rgb(73, 153, 100);
 }
@@ -10,9 +10,9 @@ header {
     flex: 1 1 auto;
     display: flex;
     flex-wrap: nowrap;
-    justify-content: stretch;
+    justify-content: space-around;
     align-items: center;
-    padding: 2rem 1rem;
+    padding: 1rem 2rem;
 }
 
 nav {
@@ -20,7 +20,7 @@ nav {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    padding: 2rem 2rem;
+    padding: 1rem 2rem;
 }
 
 main {
@@ -32,9 +32,15 @@ main {
     padding: 2rem 6rem;
 }
 
-nav {
+nav input {
+    flex: 1 1 95%;
+}
+
+nav button {
     flex: 1 1 auto;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
+}
+
+button {
+    background-color: transparent;
+    border: none;
 }
