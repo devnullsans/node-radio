@@ -47,16 +47,7 @@ button {
     background-color: transparent;
     border: none;
 }
-.container {
-    justify-content: center;
-    overflow-y: auto;
-    flex: 1 1 100%;
-    display: flex;
-    flex-flow: column-reverse nowrap;
-    align-items: stretch;
-    padding: 2rem 6rem;
- }
- 
+
 @keyframes gradient {
 	0% {
 		background-position: 0% 50%;
