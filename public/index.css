@@ -1,48 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 body {
-    height: calc(100vh - 10px);
+    height: calc(100vh - 1px);
     display: flex;
-    flex-flow: column-reverse nowrap;
+    flex-flow: column nowrap;
     align-items: stretch;
-    background: linear-gradient(-45deg, #000, #333333, #cccccc, #fff);
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
 	background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
 }
-
-header {
-    flex: 1 1 auto;
+main , footer {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-around;
-    align-items: center;
     padding: 1rem 2rem;
 }
-
-nav {
-    flex: 1 1 auto;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-
 main {
-    overflow-y: auto;
     flex: 1 1 100%;
+}
+footer {
+    flex: 1 1 10%;
+}
+aside, section, form, footer > div {
     display: flex;
-    flex-flow: column-reverse nowrap;
+    flex-wrap: nowrap;
     align-items: stretch;
-    padding: 2rem 6rem;
+    padding: 1rem;
+}
+aside, footer > div {
+    flex: 1 1 30%;
+}
+section, form {
+    flex: 1 1 100%;
 }
 
-nav textarea {
-    flex: 1 1 95%;
-    height: 5vh;
+aside, section {
+    flex-flow: column nowrap;
+    align-items: center;
+    overflow-y: auto;
 }
 
-nav button {
-    flex: 1 1 auto;
+form, footer > div {
+    flex-flow: row nowrap;
+    align-items: stretch;
+}
+aside {
+    background: rgba(255, 255, 255, 0.1);
+    border-top-right-radius: 0.2em;
+    border-bottom-right-radius: 0.2em;
+}
+aside > h3 {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1em;
+    margin: 0;
+    font-weight: 300;
+    text-align: center;
+}
+article.msg-l {
+    align-self: flex-start;
 }
 
+article.msg-r {
+    align-self: flex-end;
+}
+
+article.msg-r::after {
+	content: "";
+	position: absolute;
+	margin: -1.5em -17.06em;
+	width: 0;
+	height: 0;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	border-right: 10px solid rgba(255, 255, 255, 0.2);
+}
+article.msg-l::after {
+    content: "";
+    position: absolute;
+    margin: -1.5em 1.87em;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid rgba(255, 255, 255, 0.2);
+}
+article.msg {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1em 0;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+form {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+form > input {
+	background: rgba(255, 255, 255, 0.03);
+	border: none;
+	width: 75%;
+	padding: 1.2em;
+	outline: none;
+	color: rgba(255, 255, 255, 0.9);
+	font-weight: 300;
+}
 button {
     background-color: transparent;
     border: none;
@@ -51,9 +113,11 @@ button {
 @keyframes gradient {
 	0% {
 		background-position: 0% 50%;
+        color: #000;
 	}
 	50% {
 		background-position: 100% 50%;
+        color: #fff;
 	}
 	100% {
 		background-position: 0% 50%;
